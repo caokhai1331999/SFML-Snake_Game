@@ -1,0 +1,1 @@
+This is a small Snake Game created by me a newbie, you just need to download and open executive file to play
