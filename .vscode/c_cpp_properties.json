@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "name": "g++ run and debug active file",
+            "includePath": [
+                "C:/Users/klove/Downloads/SFML/SFML-2.5.1 for MINGW/SFML-2.5.1/lib",
+                "C:/Users/klove/Downloads/SFML/SFML-2.5.1 for MINGW/SFML-2.5.1/include"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "cStandard": "gnu17",
+            "cppStandard": "c++14",
+            "intelliSenseMode": "windows-gcc-x86",
+            "configurationProvider": "ms-vscode.cmake-tools",
+            "compilerPath": "C:/MinGW/bin/g++.exe"
+        }
+    ],
+    "version": 4
+}

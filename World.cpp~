@@ -1,0 +1,74 @@
+#include "World.h"
+
+using namespace sf;
+using namespace std;
+
+World::World(sf::Vector2u l_Window){
+  // NOTE: Still don't know why m_BlockSize is 16
+  m_BlockSize =16;
+  m_WindowSize = l_Window;
+
+  m_appleShape.setFillColor(sf::Color::Red);
+  m_appleShape.setRadius(m_BlockSize/2);
+  // m_appleShape.setPosition(std::rand()%(m_WindowSize.x-m_BlockSize),std::rand()%(m_WindowSize.y-m_BlockSize));
+  RespawnApple();
+  for(int i{0};i<4;i++){
+    m_bounds[i].setFillColor(sf::Color(150,0,0));
+    // set size of 4 bounds
+    if(!((i+1)%2)){
+      //2 horizone bounds while i == 1 and 3
+      m_bounds[i].setSize(sf::Vector2f(m_WindowSize.x,m_BlockSize));
+    } else {
+      //2 vertical bounds while i==2 and 4
+      m_bounds[i].setSize(sf::Vector2f(m_BlockSize,m_WindowSize.y));
+    }
+
+    if(i<2){
+      m_bounds[i].setPosition(0,0);
+    } else {
+      m_bounds[i].setOrigin(m_bounds[i].getSize());
+      m_bounds[i].setPosition(sf::Vector2f(m_WindowSize));
+    }
+  }
+
+}
+
+World::~World(){}
+
+int World::GetBlockSize(){
+  return m_BlockSize;
+}
+
+void World::RespawnApple(){
+  std::srand(std::time(nullptr));//use the current time as seed for the generator
+  
+  int MaxX = (int(m_WindowSize.x)/m_BlockSize)-2;
+  int MaxY = (int(m_WindowSize.y)/m_BlockSize)-2;
+
+  m_item = sf::Vector2i(std::rand()%MaxX+1,std::rand()%MaxY+1);
+  // NOTE: Still don't know why it mutiply with m_BlockSize
+  m_appleShape.setPosition(m_item.x*m_BlockSize,m_item.y*m_BlockSize);
+  } 
+
+void World::Update(Snake& l_player, TextBox& m_Box){
+  if(l_player.GetPosition() == m_item){
+    l_player.Extend();
+    l_player.IncreaseScore();
+    m_Box.Add("You have eated an apple Score+"+std::to_string(10));
+    RespawnApple(); 
+  }
+  int GridSize_x = int(m_WindowSize.x)/m_BlockSize;
+  int GridSize_y = int(m_WindowSize.y)/m_BlockSize;
+
+  if (l_player.GetPosition().x<=0||l_player.GetPosition().y<=0
+  ||l_player.GetPosition().x>=GridSize_x||l_player.GetPosition().y>=GridSize_y){
+    l_player.Lose();
+  }
+}
+
+void World::Render(sf::RenderWindow& l_Window){
+  for(int i{0};i<4;++i){
+    l_Window.draw(m_bounds[i]);
+  }
+  l_Window.draw(m_appleShape);
+}

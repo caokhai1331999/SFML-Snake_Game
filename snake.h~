@@ -1,0 +1,63 @@
+#pragma once
+#include <SFML/Graphics.hpp>
+#include <vector>
+/* This SnakeSegment use separated Node Al */
+// #ifndef SNAKESEGMENT_H
+// #define SNAKESEGMENT_H
+struct SnakeSegment {
+    // Constructor for struct SnakeSegment
+    SnakeSegment(int x, int y):Position(x,y){};
+    sf::Vector2i Position;
+};
+// #endif
+
+using SnakeContainer = std::vector<SnakeSegment>;
+
+
+enum class Direction  {None, Up, Down, Left, Right};
+
+class Snake {
+  
+ public:
+  Snake(int l_BlockSize);
+  ~Snake();
+  //Helper method
+  void SetDirection(const Direction& l_dir);
+  
+  sf::Vector2i GetPosition();
+  int GetSpeed();
+  int GetLives();
+  Direction GetDirection();
+  int GetScore();
+  
+  void IncreaseScore();
+  bool HasLost();
+ 
+    /* NOTE: all the necessary methods are riht here */
+  void Lose();//Handle the Lost here
+  void ToggleLost();
+  
+  void Extend();//Grow the snake
+  void Reset();//Get The snake back to the beginning
+ 
+  void Move();//Move the Snake
+  void Tick();//Update the Game ,"Tick" is a referring to "fixed time step" 
+  void Cut(int l_Segment);//Cut The Snake for one segment
+  void Render(sf::RenderWindow& l_Window);
+    	 		
+ private:
+    			
+  void CheckCollision();
+
+  SnakeContainer m_SnakeBody;
+  int m_Size; // Size of the graphics
+  Direction m_Dir;	
+  int m_Live;//Lives
+  int m_Score;//Scors	
+  int m_Speed;	
+  bool m_Lost;//Losing State
+			
+  sf::Color SnakeBodyColor = sf::Color::Green;
+  sf::RectangleShape m_BodyRect;//Shape used in Rendering
+    
+};

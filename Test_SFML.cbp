@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="Test_SFML" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/Test_SFML" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add directory="Include" />
+				</Compiler>
+				<Linker>
+					<Add library="sfml-graphics-d" />
+					<Add library="sfml-window-d" />
+					<Add library="sfml-system-d" />
+				</Linker>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/Test_SFML" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add directory="Include" />
+					<Add directory="../../../Downloads/SFML/SFML-2.5.1 for MINGW/SFML-2.5.1/include/SFML/Book" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add library="sfml-graphics" />
+					<Add library="sfml-window" />
+					<Add library="sfml-system" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-std=gnu++14" />
+			<Add option="-fexceptions" />
+			<Add option="-DSFML_STATIC" />
+			<Add directory="C:/Users/klove/Downloads/SFML/SFML-2.5.1 for MINGW/SFML-2.5.1/include" />
+		</Compiler>
+		<Linker>
+			<Add directory="C:/Users/klove/Downloads/SFML/SFML-2.5.1 for MINGW/SFML-2.5.1/lib" />
+		</Linker>
+		<Unit filename="9781785287343/SFMLGameDevelopmentByExample/B04284_03_code/Game.cpp" />
+		<Unit filename="9781785287343/SFMLGameDevelopmentByExample/B04284_03_code/Game.h" />
+		<Unit filename="9781785287343/SFMLGameDevelopmentByExample/B04284_03_code/Main.cpp" />
+		<Unit filename="9781785287343/SFMLGameDevelopmentByExample/B04284_03_code/Snake.cpp" />
+		<Unit filename="9781785287343/SFMLGameDevelopmentByExample/B04284_03_code/Snake.h" />
+		<Unit filename="9781785287343/SFMLGameDevelopmentByExample/B04284_03_code/Textbox.cpp" />
+		<Unit filename="9781785287343/SFMLGameDevelopmentByExample/B04284_03_code/Textbox.h" />
+		<Unit filename="9781785287343/SFMLGameDevelopmentByExample/B04284_03_code/Window.cpp" />
+		<Unit filename="9781785287343/SFMLGameDevelopmentByExample/B04284_03_code/Window.h" />
+		<Unit filename="9781785287343/SFMLGameDevelopmentByExample/B04284_03_code/World.cpp" />
+		<Unit filename="9781785287343/SFMLGameDevelopmentByExample/B04284_03_code/World.h" />
+		<Extensions />
+	</Project>
+</CodeBlocks_project_file>

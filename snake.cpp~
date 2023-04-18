@@ -1,0 +1,172 @@
+#include "snake.h"
+
+Snake::Snake(int l_BlockSize){
+  m_Size = l_BlockSize;
+  m_BodyRect.setSize(sf::Vector2f(m_Size-1,m_Size-1));
+  Reset();
+}
+
+Snake::~Snake(){};
+// learn to write move up down chunk of code
+void Snake::SetDirection(const Direction&l_Dir){
+  m_Dir = l_Dir;
+}
+
+void Snake::Reset(){
+  m_SnakeBody.clear();
+  
+  m_SnakeBody.push_back(SnakeSegment(5,7));
+  m_SnakeBody.push_back(SnakeSegment(5,6));
+  m_SnakeBody.push_back(SnakeSegment(5,5));
+
+  SetDirection(Direction::None); // NOTE: Start of still
+  m_Live = 5;
+  m_Score = 0;
+  m_Speed = 15;
+  m_Lost = false;
+}
+//Maybe I found out the winner here
+sf::Vector2i Snake::GetPosition(){
+  return (!m_SnakeBody.empty()?m_SnakeBody.front().Position: sf::Vector2i(1,1));
+}
+
+int Snake::GetSpeed(){return m_Speed;}
+int Snake::GetLives(){return m_Live;}
+int Snake::GetScore(){return m_Score;}
+
+Direction Snake::GetDirection(){return m_Dir;}
+
+
+void Snake::Lose(){  m_Lost = true;}
+bool Snake::HasLost(){
+      return m_Lost;
+}
+void Snake::ToggleLost(){
+  m_Lost = !m_Lost;
+}
+
+
+void Snake::IncreaseScore(){ m_Score+= 10;}
+void Snake::Extend(){
+  if (m_SnakeBody.empty()){
+    return;
+  }
+  // NOTE: Now create a reference to the last element
+  // of the snakebody which is "tail_head"
+  // and a reference next to the last element which is
+  // "tail_bone"
+
+  // Tail_head(last ele)
+  SnakeSegment &tail_head = m_SnakeBody.at(m_SnakeBody.size()-1);
+  // Tail_bone(next to last ele)
+  if (m_SnakeBody.size()>1){
+
+  SnakeSegment &tail_bone = m_SnakeBody.at(m_SnakeBody.size()-2);
+  
+  if (tail_head.Position.x == tail_bone.Position.x){
+    if(tail_head.Position.y > tail_bone.Position.y){
+      // This is when the snake turn down
+      m_SnakeBody.push_back(SnakeSegment(tail_head.Position.x,tail_head.Position.y+1));
+    }else
+      // This is when the snake turn up
+      {m_SnakeBody.push_back(SnakeSegment(tail_head.Position.x,tail_head.Position.y-1));}
+  }
+  
+  else if (tail_head.Position.y == tail_bone.Position.y){
+    if(tail_head.Position.x > tail_bone.Position.x){
+      // This is when the snake turn right
+      // add segment at the head
+      m_SnakeBody.push_back(SnakeSegment(tail_head.Position.x+1,tail_head.Position.y));
+    }else
+      // This is when the snake turn left
+      {m_SnakeBody.push_back(SnakeSegment(tail_head.Position.x-1,tail_head.Position.y));}
+  }
+
+  else {
+    if (m_Dir == Direction::Up){
+      m_SnakeBody.push_back(SnakeSegment(tail_head.Position.x,tail_head.Position.y+1 ));
+
+    }else if (m_Dir == Direction::Down){
+      m_SnakeBody.push_back(SnakeSegment(tail_head.Position.x,tail_head.Position.y-1 ));
+    }
+
+    else if (m_Dir == Direction::Right){
+      m_SnakeBody.push_back(SnakeSegment(tail_head.Position.x-1,tail_head.Position.y ));
+    }
+  
+    else if (m_Dir == Direction::Left){
+      m_SnakeBody.push_back(SnakeSegment(tail_head.Position.x+1,tail_head.Position.y ));
+    }
+  }  
+  }
+}
+
+//Now main method to move the snake
+void Snake::Move(){
+  for (int i {static_cast<int>(m_SnakeBody.size())-1} ; i>0;--i){
+    m_SnakeBody[i].Position=m_SnakeBody[i-1].Position;
+  }
+  if (m_Dir==Direction::Up){
+    --m_SnakeBody[0].Position.y;
+  }
+  else if (m_Dir==Direction::Down){
+    ++m_SnakeBody[0].Position.y;
+  }
+
+  else if (m_Dir==Direction::Left){
+    --m_SnakeBody[0].Position.x;
+  }
+
+  else if (m_Dir==Direction::Right){
+    ++m_SnakeBody[0].Position.x;
+  }
+}
+
+// Now the Update method
+void Snake::Tick(){
+  // The first two line is chech whether the snake is still or not
+  if (m_SnakeBody.empty()){return;}
+  if (m_Dir==Direction::None){return;}
+  Move();
+  CheckCollision();
+}
+
+void Snake::CheckCollision(){
+  // NOTE: if The SnakeBody is shorter than 5
+  // There is no need to check collision
+  if (m_SnakeBody.size()<5){return;}
+  SnakeSegment& Head = m_SnakeBody.front();
+  for(auto itr = m_SnakeBody.begin()+1; itr!=m_SnakeBody.end(); itr++){
+    if (itr->Position==Head.Position){
+      // NOTE: Now I get it
+      int segments = m_SnakeBody.end()-itr;
+      Cut(segments);
+      break;
+    }
+  }
+}
+
+void Snake::Cut(int l_Segment){
+  // m_SnakeBody.erase(m_SnakeBody.begin(),m_SnakeBody.begin()+l_Segment);
+  // m_Live -= l_Segment;
+  for (int i{0};i<l_Segment;++i){
+    m_SnakeBody.pop_back();
+  }
+  --m_Live;
+  if (!m_Live){Lose();return;}
+}
+
+void Snake::Render(sf::RenderWindow& l_Window){
+  if (m_SnakeBody.empty()){return;};
+
+  auto head = m_SnakeBody.begin();
+  m_BodyRect.setFillColor(sf::Color::Yellow);//Some how this caused memory leaked 
+  m_BodyRect.setPosition(head->Position.x*m_Size,head->Position.y*m_Size);
+  l_Window.draw(m_BodyRect);
+
+  m_BodyRect.setFillColor(SnakeBodyColor);
+  for(auto itr=m_SnakeBody.begin()+1;itr!=m_SnakeBody.end();itr++){
+    m_BodyRect.setPosition(itr->Position.x*m_Size,itr->Position.y*m_Size);
+    l_Window.draw(m_BodyRect);
+  }
+}
